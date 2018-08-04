@@ -4,12 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.bitvector</groupId>
-    <artifactId>frontdoor</artifactId>
+    <artifactId>gateway</artifactId>
     <version>0.1.0</version>
     <packaging>jar</packaging>
 
-    <name>frontdoor</name>
-    <description>Combined Nginx and Spring Cloud Gateway k8s application</description>
+    <name>gateway</name>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -91,6 +90,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>
