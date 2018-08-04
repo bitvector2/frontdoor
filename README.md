@@ -1,1 +1,1 @@
-Combined Nginx and Spring Cloud Gateway k8s application
+docker run --rm -t -a stdout --name my-nginx nginx:latest nginx -T
