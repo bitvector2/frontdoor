@@ -1,0 +1,1 @@
+Combined Nginx and Spring Cloud Gateway k8s application
