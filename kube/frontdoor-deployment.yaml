@@ -70,10 +70,22 @@ data:
     }
 
     http {
+      upstream frontdoor-gateway {
+        server 127.0.0.1:8080;
+        keepalive 16;
+      }
+
       server {
         location / {
           return 200 'Hello from the frontdoor-nginx container\n';
           add_header Content-Type text/plain;
+        }
+
+        location /api {
+          proxy_pass http://frontdoor-gateway;
+          proxy_http_version 1.1;
+          proxy_set_header Connection "";
+          proxy_buffering off;
         }
       }
     }
