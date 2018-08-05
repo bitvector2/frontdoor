@@ -5,7 +5,7 @@ spring:
       - id: httpbin
         uri: http://httpbin.org
         predicates:
-        - Path=/r/**
+        - Path=/r/httpbin/{segment}
         filters:
-        - StripPrefix=1
+        - SetPath=/{segment}
         - AddRequestHeader=Foo, Bar
