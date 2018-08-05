@@ -1,7 +1,6 @@
 Combined Istio / Nginx / Spring Cloud Gateway Front Door Layer
 
- - Istio Ingress Gateway terminates inbound TLS requests from internet and routes to either Nginx or 
- Spring Cloud Gateway
+ - Istio Ingress Gateway terminates inbound TLS requests from internet and routes to either Nginx or Spring Cloud Gateway
  
     - Static content is served from Nginx
     - API calls are served from Spring Cloud Gateway
