@@ -1,0 +1,60 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: frontdoor
+  namespace: default
+  labels:
+    app: frontdoor
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    tls:
+      httpsRedirect: true
+    hosts:
+    - "frontdoor.bitvector.org"
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
+      privateKey: /etc/istio/ingressgateway-certs/tls.key
+    hosts:
+    - "frontdoor.bitvector.org"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: frontdoor
+  namespace: default
+  labels:
+    app: frontdoor
+spec:
+  hosts:
+  - "frontdoor.bitvector.org"
+  gateways:
+  - frontdoor
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        port:
+          number: 80
+        host: frontdoor.default.svc.cluster.local
+
+#
+# export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
+# export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}')
+# export INGRESS_HOST=$(kubectl get po -l istio=ingressgateway -n istio-system -o 'jsonpath={.items[0].status.hostIP}')
+#
+# curl --include --header host:frontdoor.bitvector.org http://$INGRESS_HOST:$INGRESS_PORT/
+# curl --include --header host:frontdoor.bitvector.org --resolve frontdoor.bitvector.org:$SECURE_INGRESS_PORT:$INGRESS_HOST --cacert 2_intermediate/certs/ca-chain.cert.pem https://frontdoor.bitvector.org:$SECURE_INGRESS_PORT/
+#

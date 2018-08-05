@@ -32,6 +32,10 @@ spec:
       labels:
         app: frontdoor
     spec:
+      volumes:
+      - name: frontdoor-nginx-configmap
+        configMap:
+          name: frontdoor-nginx-configmap
       containers:
       - name: frontdoor-nginx
         image: nginx:latest
@@ -40,6 +44,10 @@ spec:
         - containerPort: 80
           name: service-port
           protocol: TCP
+        volumeMounts:
+        - name: frontdoor-nginx-configmap
+          mountPath: /etc/nginx
+          readOnly: true
       - name: frontdoor-gateway
         image: bitvector/gateway:0.1.0
         imagePullPolicy: Always
@@ -48,3 +56,24 @@ spec:
         resources:
           limits:
             memory: "1024M"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontdoor-nginx-configmap
+  namespace: default
+  labels:
+    app: frontdoor
+data:
+  nginx.conf: |
+    events {
+    }
+
+    http {
+      server {
+        location / {
+          return 200 'Eureka!';
+          add_header Content-Type text/plain;
+        }
+      }
+    }
