@@ -1,18 +1,15 @@
-Combined Nginx / Spring Cloud Gateway
+Combined Istio / Nginx / Spring Cloud Gateway Front Door Layer
 
- - Istio Ingress Gateway terminates inbound TLS requests from internet and routes to Combined Nginx / 
- Spring Cloud Gateway layer
+ - Istio Ingress Gateway terminates inbound TLS requests from internet and routes to either Nginx or 
+ Spring Cloud Gateway
  
     - Static content is served from Nginx
-    - RESTful API calls are routed to Spring Cloud Gateway
-        - Spring Cloud Gateway provides HTTP request/response mutations
-        - Spring Cloud Gateway aggregrates many microservices running in many DC's
-    - Both Nginx and Gateway are combined within the same Pods and communicate via the loopback interface 
-    - Traffic pathway is entirely inline to avoid use of CORS
+    - API calls are served from Spring Cloud Gateway
+    - Traffic pathway appears entirely inline to avoid use of CORS
 
- - Istio provides mTLS between all Envoy connections automatically
- - Istio provides client side load balancing, retrying and circuit breaker logic between inside of mesh endpoints
- - Istio Egress Gateway provides retrying and circuit breaker logic to outside of mesh endpoints
+ - Istio provides mTLS between all Envoy:Envoy connections automatically
+ - Istio provides client side load balancing, retry and circuit breaker logic
+ - Istio Egress Gateway provides retry and circuit breaker logic to outside world
   
 Testing Notes
 

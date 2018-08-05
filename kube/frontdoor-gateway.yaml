@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontdoor-gateway
+  namespace: default
+  labels:
+    app: frontdoor-gateway
+spec:
+  ports:
+  - name: http-port
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: frontdoor-gateway
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontdoor-gateway
+  namespace: default
+  labels:
+    app: frontdoor-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontdoor-gateway
+  template:
+    metadata:
+      labels:
+        app: frontdoor-gateway
+    spec:
+      containers:
+      - name: frontdoor-gateway
+        image: bitvector/gateway:0.1.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: http-port
+          protocol: TCP
+        command: ["java"]
+        args: ["-XX:MaxRAMPercentage=75", "-jar", "app.jar"]
+        resources:
+          limits:
+            memory: "1024M"

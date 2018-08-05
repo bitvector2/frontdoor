@@ -1,69 +1,61 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontdoor
+  name: frontdoor-nginx
   namespace: default
   labels:
-    app: frontdoor
+    app: frontdoor-nginx
 spec:
   ports:
-  - name: service-port
+  - name: http-port
     port: 80
     protocol: TCP
     targetPort: 80
   selector:
-    app: frontdoor
+    app: frontdoor-nginx
   type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontdoor
+  name: frontdoor-nginx
   namespace: default
   labels:
-    app: frontdoor
+    app: frontdoor-nginx
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: frontdoor
+      app: frontdoor-nginx
   template:
     metadata:
       labels:
-        app: frontdoor
+        app: frontdoor-nginx
     spec:
       volumes:
-      - name: frontdoor-nginx-configmap
+      - name: frontdoor-nginx
         configMap:
-          name: frontdoor-nginx-configmap
+          name: frontdoor-nginx
       containers:
       - name: frontdoor-nginx
         image: nginx:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 80
-          name: service-port
+          name: http-port
           protocol: TCP
         volumeMounts:
-        - name: frontdoor-nginx-configmap
+        - name: frontdoor-nginx
           mountPath: /etc/nginx
           readOnly: true
-      - name: frontdoor-gateway
-        image: bitvector/gateway:0.1.0
-        imagePullPolicy: Always
-        command: ["java"]
-        args: ["-XX:MaxRAMPercentage=75", "-jar", "app.jar"]
-        resources:
-          limits:
-            memory: "1024M"
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: frontdoor-nginx-configmap
+  name: frontdoor-nginx
   namespace: default
   labels:
-    app: frontdoor
+    app: frontdoor-nginx
 data:
   nginx.conf: |
     events {
@@ -72,10 +64,6 @@ data:
     http {
       include /etc/nginx/mime.types;
       default_type application/octet-stream;
-      upstream frontdoor-gateway {
-        server 127.0.0.1:8080;
-        keepalive 16;
-      }
       server {
         location / {
           sendfile on;
@@ -83,14 +71,6 @@ data:
           tcp_nodelay on;
           root /usr/share/nginx/html;
           index index.html index.htm;
-        }
-        location /r {
-          tcp_nodelay on;
-          proxy_pass http://frontdoor-gateway;
-          proxy_http_version 1.1;
-          proxy_set_header Connection "";
-          proxy_request_buffering off;
-          proxy_buffering off;
         }
       }
     }

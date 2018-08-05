@@ -1,10 +1,10 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: frontdoor
+  name: frontdoor-istio
   namespace: default
   labels:
-    app: frontdoor
+    app: frontdoor-istio
 spec:
   selector:
     istio: ingressgateway
@@ -31,16 +31,24 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: frontdoor
+  name: frontdoor-istio
   namespace: default
   labels:
-    app: frontdoor
+    app: frontdoor-istio
 spec:
   hosts:
   - "frontdoor.bitvector.org"
   gateways:
-  - frontdoor
-  http:
+  - frontdoor-istio
+  http:  # matching is order specific - "slash" must be at bottom to not shadow others
+  - match:
+    - uri:
+        prefix: /r
+    route:
+    - destination:
+        port:
+          number: 8080
+        host: frontdoor-gateway.default.svc.cluster.local
   - match:
     - uri:
         prefix: /
@@ -48,4 +56,4 @@ spec:
     - destination:
         port:
           number: 80
-        host: frontdoor.default.svc.cluster.local
+        host: frontdoor-nginx.default.svc.cluster.local
