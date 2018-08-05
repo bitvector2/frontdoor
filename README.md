@@ -17,4 +17,4 @@ Testing Notes
 - export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}')
 - export INGRESS_HOST=$(kubectl get po -l istio=ingressgateway -n istio-system -o 'jsonpath={.items[0].status.hostIP}')
 - curl --include --header host:frontdoor.bitvector.org http://$INGRESS_HOST:$INGRESS_PORT/
-- curl --include --header host:frontdoor.bitvector.org --resolve frontdoor.bitvector.org:$SECURE_INGRESS_PORT:$INGRESS_HOST --cacert 2_intermediate/certs/ca-chain.cert.pem https://frontdoor.bitvector.org:$SECURE_INGRESS_PORT/
+- curl --include --header host:frontdoor.bitvector.org --resolve frontdoor.bitvector.org:$SECURE_INGRESS_PORT:$INGRESS_HOST --cacert 2_intermediate/certs/ca-chain.cert.pem https://frontdoor.bitvector.org:$SECURE_INGRESS_PORT/r/get
