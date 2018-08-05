@@ -9,6 +9,7 @@ Combined Nginx / Spring Cloud Gateway
         - Spring Cloud Gateway provides HTTP request/response mutations
         - Spring Cloud Gateway aggregrates many microservices running in many DC's
     - Both Nginx and Gateway are combined within the same Pods and communicate via the loopback interface 
+    - Traffic pathway is entirely inline to avoid use of CORS
 
  - Istio provides mTLS between all Envoy connections automatically
  - Istio provides client side load balancing, retrying and circuit breaker logic between inside of mesh endpoints
