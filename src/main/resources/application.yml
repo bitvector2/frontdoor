@@ -1,0 +1,11 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: httpbin
+        uri: http://httpbin.org
+        predicates:
+        - Path=/r/**
+        filters:
+        - StripPrefix=1
+        - AddRequestHeader=Foo, Bar
