@@ -69,16 +69,13 @@ data:
     events {
       use epoll;
     }
-
     http {
       include /etc/nginx/mime.types;
       default_type application/octet-stream;
-
       upstream frontdoor-gateway {
         server 127.0.0.1:8080;
         keepalive 16;
       }
-
       server {
         location / {
           sendfile on;
@@ -87,7 +84,6 @@ data:
           root /usr/share/nginx/html;
           index index.html index.htm;
         }
-
         location /r {
           tcp_nodelay on;
           proxy_pass http://frontdoor-gateway;
