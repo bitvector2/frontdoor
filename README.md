@@ -19,7 +19,6 @@ Background Info
 - https://cloud.spring.io/spring-cloud-gateway/
 - https://spring.io/guides/gs/gateway/
 
-  
 Testing Notes
 
 - export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
