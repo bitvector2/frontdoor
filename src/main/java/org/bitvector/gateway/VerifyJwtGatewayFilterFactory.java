@@ -12,8 +12,8 @@ import java.util.List;
 
 @Component
 public class VerifyJwtGatewayFilterFactory extends AbstractGatewayFilterFactory<VerifyJwtGatewayFilterFactory.Config> {
-    public static final String HEADER_NAME = "headerName";
     private static final Log log = LogFactory.getLog(VerifyJwtGatewayFilterFactory.class);
+    private static final String HEADER_NAME = "headerName";
 
     public VerifyJwtGatewayFilterFactory() {
         super(Config.class);
@@ -26,8 +26,6 @@ public class VerifyJwtGatewayFilterFactory extends AbstractGatewayFilterFactory<
 
     @Override
     public GatewayFilter apply(Config config) {
-        log.info("VerifyJwtGatewayFilterFactory.apply() was called");
-
         return (exchange, chain) -> {
             String headerName = config.getHeaderName();
 
@@ -44,7 +42,13 @@ public class VerifyJwtGatewayFilterFactory extends AbstractGatewayFilterFactory<
                     .header("Hello", "World")
                     .build();
 
-            return chain.filter(exchange.mutate().request(request).build());
+            log.info("VerifyJwtGateway Ran");
+
+            return chain.filter(exchange
+                    .mutate()
+                    .request(request)
+                    .build()
+            );
         };
     }
 

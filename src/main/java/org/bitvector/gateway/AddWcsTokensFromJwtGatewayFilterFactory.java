@@ -12,8 +12,8 @@ import java.util.List;
 
 @Component
 public class AddWcsTokensFromJwtGatewayFilterFactory extends AbstractGatewayFilterFactory<AddWcsTokensFromJwtGatewayFilterFactory.Config> {
-    public static final String HEADER_NAME = "headerName";
     private static final Log log = LogFactory.getLog(AddWcsTokensFromJwtGatewayFilterFactory.class);
+    private static final String HEADER_NAME = "headerName";
 
     public AddWcsTokensFromJwtGatewayFilterFactory() {
         super(Config.class);
@@ -26,8 +26,6 @@ public class AddWcsTokensFromJwtGatewayFilterFactory extends AbstractGatewayFilt
 
     @Override
     public GatewayFilter apply(Config config) {
-        log.info("AddWcsTokensFromJwtGatewayFilterFactory.apply() was called");
-
         return (exchange, chain) -> {
             String headerName = config.getHeaderName();
 
@@ -45,7 +43,13 @@ public class AddWcsTokensFromJwtGatewayFilterFactory extends AbstractGatewayFilt
                     .header("WCS_SECURE_TOKEN", jwt)
                     .build();
 
-            return chain.filter(exchange.mutate().request(request).build());
+            log.info("AddWcsTokensFromJwt Ran");
+
+            return chain.filter(exchange
+                    .mutate()
+                    .request(request)
+                    .build()
+            );
         };
     }
 
