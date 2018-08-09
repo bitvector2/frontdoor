@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: frontdoor-gateway
-  namespace: default
+  namespace: common-services
   labels:
     app: frontdoor-gateway
 spec:
@@ -19,7 +19,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontdoor-gateway
-  namespace: default
+  namespace: common-services
   labels:
     app: frontdoor-gateway
 spec:
@@ -45,3 +45,15 @@ spec:
         resources:
           limits:
             memory: "1024M"
+      - name: frontdoor-redis
+        image: redis:alpine
+        imagePullPolicy: Always
+        command: ["redis-server"]
+        args: ["--maxmemory", "1000M"]
+        resources:
+          limits:
+            memory: "1024M"
+        ports:
+        - containerPort: 6379
+          name: service-port
+          protocol: TCP

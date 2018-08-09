@@ -3,9 +3,13 @@ spring:
     gateway:
       routes:
       - id: httpbin
-        uri: http://httpbin.org
+        uri: http://127.0.0.1
         predicates:
-        - Path=/r/httpbin/{segment}
+        - Path=/18f/api/**
         filters:
-        - SetPath=/{segment}
-        - AddRequestHeader=Foo, Bar
+        - StripPrefix=2
+        - VerifyJwt=Authorization
+        - AddWcsTokensFromJwt=Authorization
+
+
+

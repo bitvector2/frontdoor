@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontdoor-nodejs
+  namespace: mbp-ui
+  labels:
+    app: frontdoor-nodejs
+spec:
+  ports:
+  - name: http-port
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: frontdoor-nodejs
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontdoor-nodejs
+  namespace: mbp-ui
+  labels:
+    app: frontdoor-nodejs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontdoor-nodejs
+  template:
+    metadata:
+      labels:
+        app: frontdoor-nodejs
+    spec:
+      volumes:
+      - name: frontdoor-nodejs
+        configMap:
+          name: frontdoor-nodejs
+      containers:
+      - name: frontdoor-nodejs
+        image: node:alpine
+        imagePullPolicy: Always
+        command: ["node"]
+        args: ["/data/app.js"]
+        ports:
+        - containerPort: 80
+          name: http-port
+          protocol: TCP
+        volumeMounts:
+        - name: frontdoor-nodejs
+          mountPath: /data
+          readOnly: true
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontdoor-nodejs
+  namespace: mbp-ui
+  labels:
+    app: frontdoor-nodejs
+data:
+  app.js: |
+    const http = require('http');
+    const port = 80;
+    const server = http.createServer((req, res) => {
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'text/plain');
+      res.end('Hello World\n');
+    });
+    server.listen(port, () => {
+      console.log(`Node.js Server Running\n`);
+    });

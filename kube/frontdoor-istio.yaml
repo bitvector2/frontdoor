@@ -2,7 +2,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
   name: frontdoor-istio
-  namespace: default
+  namespace: common-services
   labels:
     app: frontdoor-istio
 spec:
@@ -16,7 +16,7 @@ spec:
     tls:
       httpsRedirect: true
     hosts:
-    - "frontdoor.bitvector.org"
+    - "origin-gcp.dev.celebrations.net"
   - port:
       number: 443
       name: https
@@ -26,29 +26,29 @@ spec:
       serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
       privateKey: /etc/istio/ingressgateway-certs/tls.key
     hosts:
-    - "frontdoor.bitvector.org"
+    - "origin-gcp.dev.celebrations.net"
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: frontdoor-istio
-  namespace: default
+  namespace: common-services
   labels:
     app: frontdoor-istio
 spec:
   hosts:
-  - "frontdoor.bitvector.org"
+  - "origin-gcp.dev.celebrations.net"
   gateways:
   - frontdoor-istio
   http:  # matching is order specific - "slash" must be at bottom to not shadow others
   - match:
     - uri:
-        prefix: /r
+        prefix: /18f/api
     route:
     - destination:
         port:
           number: 8080
-        host: frontdoor-gateway.default.svc.cluster.local
+        host: frontdoor-gateway.common-services.svc.cluster.local
   - match:
     - uri:
         prefix: /
@@ -56,7 +56,7 @@ spec:
     - destination:
         port:
           number: 80
-        host: frontdoor-nginx.default.svc.cluster.local
+        host: frontdoor-nodejs.mbp-ui.svc.cluster.local
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
