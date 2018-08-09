@@ -1,4 +1,9 @@
 spring:
+  cache:
+    cache-names: wcsession-tokens
+    caffeine:
+      spec: maximumSize=1000,expireAfterAccess=14400s
+
   cloud:
     gateway:
       routes:
@@ -10,6 +15,3 @@ spring:
         - StripPrefix=2
         - VerifyJwt=Authorization
         - AddWcsTokensFromJwt=Authorization
-
-
-

@@ -7,7 +7,7 @@ metadata:
     app: frontdoor-nodejs
 spec:
   ports:
-  - name: http-port
+  - name: service-port
     port: 80
     protocol: TCP
     targetPort: 80
@@ -44,7 +44,7 @@ spec:
         args: ["/data/app.js"]
         ports:
         - containerPort: 80
-          name: http-port
+          name: service-port
           protocol: TCP
         volumeMounts:
         - name: frontdoor-nodejs
